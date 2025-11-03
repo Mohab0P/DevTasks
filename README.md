@@ -1,26 +1,29 @@
-# DevTasks - Task Management Application
+# DevTasks
 
-مشروع إدارة مهام مبسّط.
+نظام إدارة مهام كامل باللغة العربية مبني بـ **ASP.NET Core 8** و **React TypeScript**.
 
-## 🏗️ البنية التقنية
+## 🚀 المميزات
+
+- ✅ مصادقة المستخدمين (JWT)
+- ✅ إنشاء المشاريع
+- ✅ إدارة المهام بنظام Kanban (To Do / In Progress / Done)
+- ✅ واجهة مستخدم عصرية بـ Tailwind CSS
+- ✅ RESTful API مع Swagger Documentation
+
+## 🛠️ التقنيات المستخدمة
 
 ### Backend
 - **ASP.NET Core 8** - Minimal API
-- **Entity Framework Core** - SQLite
-- **JWT Authentication** - Bearer Token
-- **Swagger/OpenAPI** - API Documentation
-- **BCrypt** - Password Hashing
+- **Entity Framework Core 9** - SQLite
+- **JWT Authentication** - مع BCrypt
+- **Swagger/OpenAPI** - توثيق API
 
 ### Frontend
 - **React 18** + **TypeScript**
-- **Vite** - Build Tool
-- **React Router v6** - Routing
-- **Tailwind CSS** - Styling
-- **Zustand** - State Management
-
-### Testing & CI
-- **xUnit** - Backend Testing
-- **GitHub Actions** - CI/CD Pipeline
+- **Vite** - Build tool
+- **React Router v6** - التوجيه
+- **Zustand** - إدارة الحالة
+- **Tailwind CSS** - التصميم
 
 ## 📁 هيكل المشروع
 
