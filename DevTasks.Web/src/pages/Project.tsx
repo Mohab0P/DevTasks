@@ -25,6 +25,7 @@ export default function ProjectPage() {
   const [showModal, setShowModal] = useState(false);
   const [newTask, setNewTask] = useState({ title: "", description: "" });
   const [isLoading, setIsLoading] = useState(false);
+  const [pageLoading, setPageLoading] = useState(true);
 
   useEffect(() => {
     loadProject();
@@ -37,6 +38,8 @@ export default function ProjectPage() {
       setProject(data);
     } catch (error) {
       console.error("Failed to load project:", error);
+    } finally {
+      setPageLoading(false);
     }
   };
 
@@ -111,18 +114,23 @@ export default function ProjectPage() {
     <div className="min-h-screen bg-gray-100">
       <Navbar />
 
-      <div className="container mx-auto px-4 py-8">
-        <div className="flex justify-between items-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-800">
-            {project?.name || "Loading..."}
-          </h1>
-          <button
-            onClick={() => setShowModal(true)}
-            className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-medium"
-          >
-            + New Task
-          </button>
+      {pageLoading ? (
+        <div className="container mx-auto px-4 py-8 text-center">
+          <p className="text-gray-600">Loading project...</p>
         </div>
+      ) : (
+        <div className="container mx-auto px-4 py-8">
+          <div className="flex justify-between items-center mb-8">
+            <h1 className="text-3xl font-bold text-gray-800">
+              {project?.name || "Project"}
+            </h1>
+            <button
+              onClick={() => setShowModal(true)}
+              className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-medium"
+            >
+              + New Task
+            </button>
+          </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {/* To Do Column */}
@@ -162,6 +170,7 @@ export default function ProjectPage() {
           </div>
         </div>
       </div>
+      )}
 
       {/* Modal */}
       {showModal && (

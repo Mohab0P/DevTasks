@@ -23,7 +23,7 @@ public static class TaskEndpoints
             {
                 Title = request.Title,
                 Description = request.Description,
-                Status = "ToDo",
+                Status = request.Status ?? "ToDo",
                 ProjectId = request.ProjectId,
                 AssignedToUserId = request.AssignedToUserId,
                 CreatedAt = DateTime.UtcNow
