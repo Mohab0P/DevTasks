@@ -14,9 +14,11 @@ export default function Dashboard() {
   const [showModal, setShowModal] = useState(false);
   const [newProjectName, setNewProjectName] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [stats, setStats] = useState({ totalProjects: 0, totalTasks: 0 });
 
   useEffect(() => {
     loadProjects();
+    loadStats();
   }, []);
 
   const loadProjects = async () => {
@@ -25,6 +27,25 @@ export default function Dashboard() {
       setProjects(data);
     } catch (error) {
       console.error("Failed to load projects:", error);
+    }
+  };
+
+  const loadStats = async () => {
+    try {
+      const projects = await api.get("/api/projects");
+      let totalTasks = 0;
+      
+      for (const project of projects) {
+        const tasks = await api.get(`/api/tasks/project/${project.id}`);
+        totalTasks += tasks.length;
+      }
+      
+      setStats({
+        totalProjects: projects.length,
+        totalTasks: totalTasks
+      });
+    } catch (error) {
+      console.error("Failed to load stats:", error);
     }
   };
 
@@ -48,11 +69,12 @@ export default function Dashboard() {
     e.preventDefault();
     e.stopPropagation();
     
-    if (!confirm("Are you sure you want to delete this project?")) return;
+    if (!confirm("هل أنت متأكد من حذف هذا المشروع؟")) return;
     
     try {
       await api.delete(`/api/projects/${projectId}`);
       loadProjects();
+      loadStats();
     } catch (error) {
       console.error("Failed to delete project:", error);
     }
@@ -63,13 +85,48 @@ export default function Dashboard() {
       <Navbar />
       
       <div className="container mx-auto px-4 py-8">
+        {/* Stats Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+          <div className="bg-white rounded-lg shadow-md p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-gray-600 text-sm">إجمالي المشاريع</p>
+                <h3 className="text-3xl font-bold text-blue-600">{stats.totalProjects}</h3>
+              </div>
+              <div className="text-4xl">📁</div>
+            </div>
+          </div>
+          
+          <div className="bg-white rounded-lg shadow-md p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-gray-600 text-sm">إجمالي المهام</p>
+                <h3 className="text-3xl font-bold text-green-600">{stats.totalTasks}</h3>
+              </div>
+              <div className="text-4xl">✅</div>
+            </div>
+          </div>
+
+          <div className="bg-white rounded-lg shadow-md p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-gray-600 text-sm">معدل المهام</p>
+                <h3 className="text-3xl font-bold text-purple-600">
+                  {stats.totalProjects > 0 ? Math.round(stats.totalTasks / stats.totalProjects) : 0}
+                </h3>
+              </div>
+              <div className="text-4xl">📊</div>
+            </div>
+          </div>
+        </div>
+
         <div className="flex justify-between items-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-800">My Projects</h1>
+          <h1 className="text-3xl font-bold text-gray-800">مشاريعي</h1>
           <button
             onClick={() => setShowModal(true)}
             className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-medium"
           >
-            + New Project
+            + مشروع جديد
           </button>
         </div>
 
@@ -83,12 +140,12 @@ export default function Dashboard() {
                 <h3 className="text-xl font-semibold text-gray-800 mb-2">
                   {project.name}
                 </h3>
-                <p className="text-gray-600">Click to view tasks</p>
+                <p className="text-gray-600">اضغط لعرض المهام</p>
               </Link>
               <button
                 onClick={(e) => handleDeleteProject(e, project.id)}
                 className="absolute top-2 right-2 text-red-500 hover:text-red-700 bg-white rounded-full w-8 h-8 flex items-center justify-center shadow"
-                title="Delete project"
+                title="حذف المشروع"
               >
                 ✕
               </button>
@@ -98,7 +155,7 @@ export default function Dashboard() {
 
         {projects.length === 0 && (
           <div className="text-center py-12">
-            <p className="text-gray-600 text-lg">No projects yet. Create your first project!</p>
+            <p className="text-gray-600 text-lg">لا توجد مشاريع بعد. أنشئ مشروعك الأول!</p>
           </div>
         )}
       </div>
@@ -107,13 +164,13 @@ export default function Dashboard() {
       {showModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
           <div className="bg-white rounded-lg p-6 max-w-md w-full">
-            <h2 className="text-2xl font-bold mb-4">Create New Project</h2>
+            <h2 className="text-2xl font-bold mb-4">إنشاء مشروع جديد</h2>
             <form onSubmit={handleCreateProject}>
               <input
                 type="text"
                 value={newProjectName}
                 onChange={(e) => setNewProjectName(e.target.value)}
-                placeholder="Project name"
+                placeholder="اسم المشروع"
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 required
               />
@@ -123,14 +180,14 @@ export default function Dashboard() {
                   disabled={isLoading}
                   className="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg disabled:opacity-50"
                 >
-                  {isLoading ? "Creating..." : "Create"}
+                  {isLoading ? "جاري الإنشاء..." : "إنشاء"}
                 </button>
                 <button
                   type="button"
                   onClick={() => setShowModal(false)}
                   className="flex-1 bg-gray-300 hover:bg-gray-400 text-gray-800 py-2 rounded-lg"
                 >
-                  Cancel
+                  إلغاء
                 </button>
               </div>
             </form>

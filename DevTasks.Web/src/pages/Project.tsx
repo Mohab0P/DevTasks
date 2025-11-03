@@ -122,14 +122,18 @@ export default function ProjectPage() {
     return tasks.filter((task) => task.status === status);
   };
 
+  const getStatusCount = (status: "ToDo" | "InProgress" | "Done") => {
+    return tasks.filter((task) => task.status === status).length;
+  };
+
   const TaskCard = ({ task }: { task: TaskItem }) => (
-    <div className="bg-white p-4 rounded-lg shadow mb-3">
+    <div className="bg-white p-4 rounded-lg shadow mb-3 hover:shadow-md transition-shadow">
       <div className="flex justify-between items-start mb-2">
         <h4 className="font-semibold text-gray-800">{task.title}</h4>
         <button
           onClick={() => handleDeleteTask(task.id)}
           className="text-red-500 hover:text-red-700 text-sm"
-          title="Delete task"
+          title="حذف المهمة"
         >
           ✕
         </button>
@@ -138,11 +142,11 @@ export default function ProjectPage() {
       <select
         value={task.status}
         onChange={(e) => handleStatusChange(task.id, e.target.value as any)}
-        className="w-full px-2 py-1 border border-gray-300 rounded text-sm"
+        className="w-full px-2 py-1 border border-gray-300 rounded text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
       >
-        <option value="ToDo">To Do</option>
-        <option value="InProgress">In Progress</option>
-        <option value="Done">Done</option>
+        <option value="ToDo">قيد الانتظار</option>
+        <option value="InProgress">قيد التنفيذ</option>
+        <option value="Done">مكتملة</option>
       </select>
     </div>
   );
@@ -153,11 +157,11 @@ export default function ProjectPage() {
 
       {pageLoading ? (
         <div className="container mx-auto px-4 py-8 text-center">
-          <p className="text-gray-600">Loading project...</p>
+          <p className="text-gray-600">جاري تحميل المشروع...</p>
         </div>
       ) : (
         <div className="container mx-auto px-4 py-8">
-          <div className="flex justify-between items-center mb-8">
+          <div className="flex justify-between items-center mb-6">
             <div className="flex items-center gap-3">
               <h1 className="text-3xl font-bold text-gray-800">
                 {project?.name || "Project"}
@@ -168,7 +172,7 @@ export default function ProjectPage() {
                   setShowEditModal(true);
                 }}
                 className="text-gray-600 hover:text-blue-600"
-                title="Edit project name"
+                title="تعديل اسم المشروع"
               >
                 ✏️
               </button>
@@ -177,44 +181,81 @@ export default function ProjectPage() {
               onClick={() => setShowModal(true)}
               className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-medium"
             >
-              + New Task
+              + مهمة جديدة
             </button>
+          </div>
+
+          {/* Task Stats */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+            <div className="bg-gray-50 rounded-lg p-4 border-r-4 border-gray-400">
+              <p className="text-gray-600 text-sm mb-1">قيد الانتظار</p>
+              <p className="text-2xl font-bold text-gray-700">{getStatusCount("ToDo")} مهمة</p>
+            </div>
+            <div className="bg-yellow-50 rounded-lg p-4 border-r-4 border-yellow-400">
+              <p className="text-gray-600 text-sm mb-1">قيد التنفيذ</p>
+              <p className="text-2xl font-bold text-yellow-700">{getStatusCount("InProgress")} مهمة</p>
+            </div>
+            <div className="bg-green-50 rounded-lg p-4 border-r-4 border-green-400">
+              <p className="text-gray-600 text-sm mb-1">مكتملة</p>
+              <p className="text-2xl font-bold text-green-700">{getStatusCount("Done")} مهمة</p>
+            </div>
           </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {/* To Do Column */}
           <div>
-            <div className="bg-gray-300 rounded-t-lg px-4 py-2">
-              <h3 className="font-bold text-gray-800">To Do</h3>
+            <div className="bg-gray-300 rounded-t-lg px-4 py-2 flex justify-between items-center">
+              <h3 className="font-bold text-gray-800">قيد الانتظار</h3>
+              <span className="bg-gray-500 text-white text-xs px-2 py-1 rounded-full">
+                {getStatusCount("ToDo")}
+              </span>
             </div>
             <div className="bg-gray-50 rounded-b-lg p-4 min-h-[400px]">
-              {getTasksByStatus("ToDo").map((task) => (
-                <TaskCard key={task.id} task={task} />
-              ))}
+              {getTasksByStatus("ToDo").length === 0 ? (
+                <p className="text-gray-400 text-center py-8">لا توجد مهام</p>
+              ) : (
+                getTasksByStatus("ToDo").map((task) => (
+                  <TaskCard key={task.id} task={task} />
+                ))
+              )}
             </div>
           </div>
 
           {/* In Progress Column */}
           <div>
-            <div className="bg-yellow-300 rounded-t-lg px-4 py-2">
-              <h3 className="font-bold text-gray-800">In Progress</h3>
+            <div className="bg-yellow-300 rounded-t-lg px-4 py-2 flex justify-between items-center">
+              <h3 className="font-bold text-gray-800">قيد التنفيذ</h3>
+              <span className="bg-yellow-600 text-white text-xs px-2 py-1 rounded-full">
+                {getStatusCount("InProgress")}
+              </span>
             </div>
             <div className="bg-yellow-50 rounded-b-lg p-4 min-h-[400px]">
-              {getTasksByStatus("InProgress").map((task) => (
-                <TaskCard key={task.id} task={task} />
-              ))}
+              {getTasksByStatus("InProgress").length === 0 ? (
+                <p className="text-gray-400 text-center py-8">لا توجد مهام</p>
+              ) : (
+                getTasksByStatus("InProgress").map((task) => (
+                  <TaskCard key={task.id} task={task} />
+                ))
+              )}
             </div>
           </div>
 
           {/* Done Column */}
           <div>
-            <div className="bg-green-300 rounded-t-lg px-4 py-2">
-              <h3 className="font-bold text-gray-800">Done</h3>
+            <div className="bg-green-300 rounded-t-lg px-4 py-2 flex justify-between items-center">
+              <h3 className="font-bold text-gray-800">مكتملة</h3>
+              <span className="bg-green-600 text-white text-xs px-2 py-1 rounded-full">
+                {getStatusCount("Done")}
+              </span>
             </div>
             <div className="bg-green-50 rounded-b-lg p-4 min-h-[400px]">
-              {getTasksByStatus("Done").map((task) => (
-                <TaskCard key={task.id} task={task} />
-              ))}
+              {getTasksByStatus("Done").length === 0 ? (
+                <p className="text-gray-400 text-center py-8">لا توجد مهام</p>
+              ) : (
+                getTasksByStatus("Done").map((task) => (
+                  <TaskCard key={task.id} task={task} />
+                ))
+              )}
             </div>
           </div>
         </div>
@@ -225,20 +266,20 @@ export default function ProjectPage() {
       {showModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
           <div className="bg-white rounded-lg p-6 max-w-md w-full">
-            <h2 className="text-2xl font-bold mb-4">Create New Task</h2>
+            <h2 className="text-2xl font-bold mb-4">إضافة مهمة جديدة</h2>
             <form onSubmit={handleCreateTask}>
               <input
                 type="text"
                 value={newTask.title}
                 onChange={(e) => setNewTask({ ...newTask, title: e.target.value })}
-                placeholder="Task title"
+                placeholder="عنوان المهمة"
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg mb-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 required
               />
               <textarea
                 value={newTask.description}
                 onChange={(e) => setNewTask({ ...newTask, description: e.target.value })}
-                placeholder="Task description"
+                placeholder="وصف المهمة"
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500 h-24"
                 required
               />
@@ -248,14 +289,14 @@ export default function ProjectPage() {
                   disabled={isLoading}
                   className="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg disabled:opacity-50"
                 >
-                  {isLoading ? "Creating..." : "Create"}
+                  {isLoading ? "جاري الإضافة..." : "إضافة"}
                 </button>
                 <button
                   type="button"
                   onClick={() => setShowModal(false)}
                   className="flex-1 bg-gray-300 hover:bg-gray-400 text-gray-800 py-2 rounded-lg"
                 >
-                  Cancel
+                  إلغاء
                 </button>
               </div>
             </form>
@@ -267,13 +308,13 @@ export default function ProjectPage() {
       {showEditModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
           <div className="bg-white rounded-lg p-6 max-w-md w-full">
-            <h2 className="text-2xl font-bold mb-4">Edit Project Name</h2>
+            <h2 className="text-2xl font-bold mb-4">تعديل اسم المشروع</h2>
             <form onSubmit={handleEditProject}>
               <input
                 type="text"
                 value={editProjectName}
                 onChange={(e) => setEditProjectName(e.target.value)}
-                placeholder="Project name"
+                placeholder="اسم المشروع"
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 required
               />
@@ -283,14 +324,14 @@ export default function ProjectPage() {
                   disabled={isLoading}
                   className="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg disabled:opacity-50"
                 >
-                  {isLoading ? "Saving..." : "Save"}
+                  {isLoading ? "جاري الحفظ..." : "حفظ"}
                 </button>
                 <button
                   type="button"
                   onClick={() => setShowEditModal(false)}
                   className="flex-1 bg-gray-300 hover:bg-gray-400 text-gray-800 py-2 rounded-lg"
                 >
-                  Cancel
+                  إلغاء
                 </button>
               </div>
             </form>
