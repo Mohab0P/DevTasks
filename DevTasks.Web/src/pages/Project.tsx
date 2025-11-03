@@ -127,26 +127,26 @@ export default function ProjectPage() {
   };
 
   const TaskCard = ({ task }: { task: TaskItem }) => (
-    <div className="bg-white p-4 rounded-lg shadow mb-3 hover:shadow-md transition-shadow">
+    <div className="bg-white p-4 rounded-lg shadow-md mb-3 hover:shadow-xl transition-all duration-300 border-l-4 border-blue-400 transform hover:-translate-y-1">
       <div className="flex justify-between items-start mb-2">
-        <h4 className="font-semibold text-gray-800">{task.title}</h4>
+        <h4 className="font-semibold text-gray-800 text-lg">{task.title}</h4>
         <button
           onClick={() => handleDeleteTask(task.id)}
-          className="text-red-500 hover:text-red-700 text-sm"
+          className="text-red-500 hover:text-white hover:bg-red-500 rounded-full w-6 h-6 flex items-center justify-center transition-all transform hover:scale-110"
           title="حذف المهمة"
         >
           ✕
         </button>
       </div>
-      <p className="text-gray-600 text-sm mb-3">{task.description}</p>
+      <p className="text-gray-600 text-sm mb-3 line-clamp-2">{task.description}</p>
       <select
         value={task.status}
         onChange={(e) => handleStatusChange(task.id, e.target.value as any)}
-        className="w-full px-2 py-1 border border-gray-300 rounded text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+        className="w-full px-3 py-2 border-2 border-gray-300 rounded-lg text-sm focus:outline-none focus:border-blue-500 bg-white cursor-pointer hover:border-blue-400 transition-colors"
       >
-        <option value="ToDo">قيد الانتظار</option>
-        <option value="InProgress">قيد التنفيذ</option>
-        <option value="Done">مكتملة</option>
+        <option value="ToDo">⏳ قيد الانتظار</option>
+        <option value="InProgress">⚡ قيد التنفيذ</option>
+        <option value="Done">✅ مكتملة</option>
       </select>
     </div>
   );
@@ -187,34 +187,100 @@ export default function ProjectPage() {
 
           {/* Task Stats */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-            <div className="bg-gray-50 rounded-lg p-4 border-r-4 border-gray-400">
-              <p className="text-gray-600 text-sm mb-1">قيد الانتظار</p>
-              <p className="text-2xl font-bold text-gray-700">{getStatusCount("ToDo")} مهمة</p>
+            <div className="bg-gradient-to-br from-gray-100 to-gray-200 rounded-lg p-5 border-r-4 border-gray-500 shadow-md transform hover:scale-105 transition-transform">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-gray-600 text-sm mb-1">⏳ قيد الانتظار</p>
+                  <p className="text-3xl font-bold text-gray-800">{getStatusCount("ToDo")}</p>
+                </div>
+              </div>
             </div>
-            <div className="bg-yellow-50 rounded-lg p-4 border-r-4 border-yellow-400">
-              <p className="text-gray-600 text-sm mb-1">قيد التنفيذ</p>
-              <p className="text-2xl font-bold text-yellow-700">{getStatusCount("InProgress")} مهمة</p>
+            <div className="bg-gradient-to-br from-blue-100 to-blue-200 rounded-lg p-5 border-r-4 border-blue-500 shadow-md transform hover:scale-105 transition-transform">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-blue-600 text-sm mb-1">⚡ قيد التنفيذ</p>
+                  <p className="text-3xl font-bold text-blue-800">{getStatusCount("InProgress")}</p>
+                </div>
+              </div>
             </div>
-            <div className="bg-green-50 rounded-lg p-4 border-r-4 border-green-400">
-              <p className="text-gray-600 text-sm mb-1">مكتملة</p>
-              <p className="text-2xl font-bold text-green-700">{getStatusCount("Done")} مهمة</p>
+            <div className="bg-gradient-to-br from-green-100 to-green-200 rounded-lg p-5 border-r-4 border-green-500 shadow-md transform hover:scale-105 transition-transform">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-green-600 text-sm mb-1">✅ مكتملة</p>
+                  <p className="text-3xl font-bold text-green-800">{getStatusCount("Done")}</p>
+                </div>
+              </div>
             </div>
           </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {/* To Do Column */}
-          <div>
-            <div className="bg-gray-300 rounded-t-lg px-4 py-2 flex justify-between items-center">
-              <h3 className="font-bold text-gray-800">قيد الانتظار</h3>
-              <span className="bg-gray-500 text-white text-xs px-2 py-1 rounded-full">
+                    {/* To Do Column */}
+          <div className="transform transition-all duration-300">
+            <div className="bg-gradient-to-r from-gray-400 to-gray-500 rounded-t-lg px-4 py-3 flex justify-between items-center shadow-md">
+              <h3 className="font-bold text-white flex items-center gap-2">
+                <span>⏳</span> قيد الانتظار
+              </h3>
+              <span className="bg-white text-gray-700 text-sm px-3 py-1 rounded-full font-bold shadow">
                 {getStatusCount("ToDo")}
               </span>
             </div>
-            <div className="bg-gray-50 rounded-b-lg p-4 min-h-[400px]">
+            <div className="bg-gray-50 rounded-b-lg p-4 min-h-[400px] border-2 border-gray-200">
               {getTasksByStatus("ToDo").length === 0 ? (
-                <p className="text-gray-400 text-center py-8">لا توجد مهام</p>
+                <div className="text-center py-12">
+                  <p className="text-gray-400 text-2xl mb-2">📭</p>
+                  <p className="text-gray-500">لا توجد مهام</p>
+                </div>
               ) : (
                 getTasksByStatus("ToDo").map((task) => (
+                  <TaskCard key={task.id} task={task} />
+                ))
+              )}
+            </div>
+          </div>
+
+          {/* In Progress Column */}
+          <div className="transform transition-all duration-300">
+            <div className="bg-gradient-to-r from-blue-400 to-blue-500 rounded-t-lg px-4 py-3 flex justify-between items-center shadow-md">
+              <h3 className="font-bold text-white flex items-center gap-2">
+                <span>⚡</span> قيد التنفيذ
+              </h3>
+              <span className="bg-white text-blue-700 text-sm px-3 py-1 rounded-full font-bold shadow">
+                {getStatusCount("InProgress")}
+              </span>
+            </div>
+            <div className="bg-blue-50 rounded-b-lg p-4 min-h-[400px] border-2 border-blue-200">
+              {getTasksByStatus("InProgress").length === 0 ? (
+                <div className="text-center py-12">
+                  <p className="text-blue-300 text-2xl mb-2">⚙️</p>
+                  <p className="text-blue-400">لا توجد مهام</p>
+                </div>
+              ) : (
+                getTasksByStatus("InProgress").map((task) => (
+                  <TaskCard key={task.id} task={task} />
+                ))
+              )}
+            </div>
+          </div>
+
+          {/* Done Column */}
+          <div className="transform transition-all duration-300">
+            <div className="bg-gradient-to-r from-green-400 to-green-500 rounded-t-lg px-4 py-3 flex justify-between items-center shadow-md">
+              <h3 className="font-bold text-white flex items-center gap-2">
+                <span>✅</span> مكتملة
+              </h3>
+              <span className="bg-white text-green-700 text-sm px-3 py-1 rounded-full font-bold shadow">
+                {getStatusCount("Done")}
+              </span>
+            </div>
+            <div className="bg-green-50 rounded-b-lg p-4 min-h-[400px] border-2 border-green-200">
+              {getTasksByStatus("Done").length === 0 ? (
+                <div className="text-center py-12">
+                  <p className="text-green-300 text-2xl mb-2">🎉</p>
+                  <p className="text-green-400">لا توجد مهام</p>
+                </div>
+              ) : (
+                getTasksByStatus("Done").map((task) => (
                   <TaskCard key={task.id} task={task} />
                 ))
               )}
@@ -240,7 +306,7 @@ export default function ProjectPage() {
             </div>
           </div>
 
-          {/* Done Column */}
+          {/* Done Column
           <div>
             <div className="bg-green-300 rounded-t-lg px-4 py-2 flex justify-between items-center">
               <h3 className="font-bold text-gray-800">مكتملة</h3>
@@ -260,7 +326,7 @@ export default function ProjectPage() {
           </div>
         </div>
       </div>
-      )}
+      )} */}
 
       {/* Modal */}
       {showModal && (

@@ -29,6 +29,42 @@ public static class ProjectEndpoints
             return Results.Created($"/api/projects/{project.Id}", new ProjectDto(project.Id, project.Name, project.OwnerId));
         });
 
+        group.MapGet("/{id:int}", async (int id, ClaimsPrincipal user, AppDbContext db) =>
+        {
+            var userId = int.Parse(user.FindFirstValue("uid")!);
+            var project = await db.Projects.FirstOrDefaultAsync(p => p.Id == id);
+            if (project == null) return Results.NotFound();
+            if (project.OwnerId != userId) return Results.Forbid();
+
+            return Results.Ok(new ProjectDto(project.Id, project.Name, project.OwnerId));
+        });
+
+        group.MapPut("/{id:int}", async (int id, ProjectCreateRequest request, ClaimsPrincipal user, AppDbContext db) =>
+        {
+            var userId = int.Parse(user.FindFirstValue("uid")!);
+            var project = await db.Projects.FirstOrDefaultAsync(p => p.Id == id);
+            if (project == null) return Results.NotFound();
+            if (project.OwnerId != userId) return Results.Forbid();
+
+            project.Name = request.Name;
+            await db.SaveChangesAsync();
+
+            return Results.Ok(new ProjectDto(project.Id, project.Name, project.OwnerId));
+        });
+
+        group.MapDelete("/{id:int}", async (int id, ClaimsPrincipal user, AppDbContext db) =>
+        {
+            var userId = int.Parse(user.FindFirstValue("uid")!);
+            var project = await db.Projects.Include(p => p.Tasks).FirstOrDefaultAsync(p => p.Id == id);
+            if (project == null) return Results.NotFound();
+            if (project.OwnerId != userId) return Results.Forbid();
+
+            db.Projects.Remove(project);
+            await db.SaveChangesAsync();
+
+            return Results.NoContent();
+        });
+
         group.MapGet("/{id:int}/tasks", async (int id, ClaimsPrincipal user, AppDbContext db) =>
         {
             var userId = int.Parse(user.FindFirstValue("uid")!);

@@ -22,42 +22,43 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 flex items-center justify-center px-4">
-      <div className="max-w-md w-full bg-white rounded-lg shadow-lg p-8">
-        <h2 className="text-3xl font-bold text-center text-gray-800 mb-6">
-          تسجيل الدخول
-        </h2>
+    <div className="min-h-screen bg-gradient-to-br from-blue-500 via-purple-500 to-pink-500 flex items-center justify-center p-4">
+      <div className="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-md transform hover:scale-105 transition-transform">
+        <div className="text-center mb-8">
+          <h1 className="text-4xl font-bold text-gray-800 mb-2">مرحباً بك 👋</h1>
+          <p className="text-gray-600">سجل دخولك للمتابعة</p>
+        </div>
 
         {error && (
-          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
-            {error}
+          <div className="bg-red-100 border-l-4 border-red-500 text-red-700 px-4 py-3 rounded-lg mb-4 animate-shake">
+            ❌ {error}
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-5">
           <div>
-            <label className="block text-gray-700 font-medium mb-2">
-              البريد الإلكتروني
+            <label className="block text-gray-700 font-medium mb-2 flex items-center gap-2">
+              📧 البريد الإلكتروني
             </label>
             <input
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 transition-colors"
               required
               placeholder="example@email.com"
             />
           </div>
 
           <div>
-            <label className="block text-gray-700 font-medium mb-2">
-              كلمة المرور
+            <label className="block text-gray-700 font-medium mb-2 flex items-center gap-2">
+              🔒 كلمة المرور
             </label>
             <input
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 transition-colors"
               required
               placeholder="••••••••"
             />
@@ -66,15 +67,15 @@ export default function Login() {
           <button
             type="submit"
             disabled={isLoading}
-            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg disabled:opacity-50"
+            className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-bold py-3 px-4 rounded-lg disabled:opacity-50 transform active:scale-95 transition-all shadow-lg"
           >
-            {isLoading ? "جاري التحميل..." : "دخول"}
+            {isLoading ? "⏳ جاري التحميل..." : "🚀 دخول"}
           </button>
         </form>
 
-        <p className="text-center text-gray-600 mt-4">
+        <p className="text-center text-gray-600 mt-6">
           ليس لديك حساب؟{" "}
-          <Link to="/register" className="text-blue-600 hover:text-blue-700 font-medium">
+          <Link to="/register" className="text-blue-600 hover:text-blue-700 font-bold underline">
             سجل الآن
           </Link>
         </p>

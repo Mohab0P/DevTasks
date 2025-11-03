@@ -25,11 +25,12 @@ export default function Register() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 flex items-center justify-center px-4">
-      <div className="max-w-md w-full bg-white rounded-lg shadow-lg p-8">
-        <h2 className="text-3xl font-bold text-center text-gray-800 mb-6">
-          إنشاء حساب جديد
-        </h2>
+    <div className="min-h-screen bg-gradient-to-br from-green-500 via-teal-500 to-blue-500 flex items-center justify-center p-4">
+      <div className="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-md transform hover:scale-105 transition-transform">
+        <div className="text-center mb-8">
+          <h1 className="text-4xl font-bold text-gray-800 mb-2">انضم إلينا! 🎉</h1>
+          <p className="text-gray-600">أنشئ حسابك الآن</p>
+        </div>
 
         {error && (
           <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
@@ -90,15 +91,15 @@ export default function Register() {
           <button
             type="submit"
             disabled={isLoading}
-            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg disabled:opacity-50"
+            className="w-full bg-gradient-to-r from-green-600 to-teal-600 hover:from-green-700 hover:to-teal-700 text-white font-bold py-3 px-4 rounded-lg disabled:opacity-50 transform active:scale-95 transition-all shadow-lg"
           >
-            {isLoading ? "جاري التسجيل..." : "تسجيل"}
+            {isLoading ? "⏳ جاري التسجيل..." : "🚀 إنشاء حساب"}
           </button>
         </form>
 
-        <p className="text-center text-gray-600 mt-4">
+        <p className="text-center text-gray-600 mt-6">
           لديك حساب بالفعل؟{" "}
-          <Link to="/login" className="text-blue-600 hover:text-blue-700 font-medium">
+          <Link to="/login" className="text-green-600 hover:text-green-700 font-bold underline">
             دخول
           </Link>
         </p>

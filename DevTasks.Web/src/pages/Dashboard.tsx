@@ -3,10 +3,19 @@ import { Link } from "react-router-dom";
 import { api } from "../lib/api";
 import Navbar from "../components/Navbar";
 
+interface Task {
+  id: number;
+  title: string;
+  description: string;
+  status: string;
+  projectId: number;
+}
+
 interface Project {
   id: number;
   name: string;
   ownerId: number;
+  tasks: Task[];
 }
 
 export default function Dashboard() {
@@ -87,35 +96,35 @@ export default function Dashboard() {
       <div className="container mx-auto px-4 py-8">
         {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          <div className="bg-white rounded-lg shadow-md p-6">
+          <div className="bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg shadow-lg p-6 text-white transform hover:scale-105 transition-transform">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-gray-600 text-sm">إجمالي المشاريع</p>
-                <h3 className="text-3xl font-bold text-blue-600">{stats.totalProjects}</h3>
+                <p className="text-blue-100 text-sm mb-1">إجمالي المشاريع</p>
+                <h3 className="text-4xl font-bold">{stats.totalProjects}</h3>
               </div>
-              <div className="text-4xl">📁</div>
+              <div className="text-5xl opacity-80">📁</div>
             </div>
           </div>
           
-          <div className="bg-white rounded-lg shadow-md p-6">
+          <div className="bg-gradient-to-br from-green-500 to-green-600 rounded-lg shadow-lg p-6 text-white transform hover:scale-105 transition-transform">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-gray-600 text-sm">إجمالي المهام</p>
-                <h3 className="text-3xl font-bold text-green-600">{stats.totalTasks}</h3>
+                <p className="text-green-100 text-sm mb-1">إجمالي المهام</p>
+                <h3 className="text-4xl font-bold">{stats.totalTasks}</h3>
               </div>
-              <div className="text-4xl">✅</div>
+              <div className="text-5xl opacity-80">✅</div>
             </div>
           </div>
 
-          <div className="bg-white rounded-lg shadow-md p-6">
+          <div className="bg-gradient-to-br from-purple-500 to-purple-600 rounded-lg shadow-lg p-6 text-white transform hover:scale-105 transition-transform">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-gray-600 text-sm">معدل المهام</p>
-                <h3 className="text-3xl font-bold text-purple-600">
+                <p className="text-purple-100 text-sm mb-1">معدل المهام</p>
+                <h3 className="text-4xl font-bold">
                   {stats.totalProjects > 0 ? Math.round(stats.totalTasks / stats.totalProjects) : 0}
                 </h3>
               </div>
-              <div className="text-4xl">📊</div>
+              <div className="text-5xl opacity-80">📊</div>
             </div>
           </div>
         </div>
@@ -131,31 +140,61 @@ export default function Dashboard() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {projects.map((project) => (
-            <div key={project.id} className="relative">
-              <Link
-                to={`/project/${project.id}`}
-                className="block bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow"
-              >
-                <h3 className="text-xl font-semibold text-gray-800 mb-2">
-                  {project.name}
-                </h3>
-                <p className="text-gray-600">اضغط لعرض المهام</p>
-              </Link>
-              <button
-                onClick={(e) => handleDeleteProject(e, project.id)}
-                className="absolute top-2 right-2 text-red-500 hover:text-red-700 bg-white rounded-full w-8 h-8 flex items-center justify-center shadow"
-                title="حذف المشروع"
-              >
-                ✕
-              </button>
-            </div>
-          ))}
+          {projects.map((project) => {
+            const completedTasks = project.tasks?.filter((t: Task) => t.status === 'Done').length || 0;
+            const totalTasks = project.tasks?.length || 0;
+            const progressPercent = totalTasks > 0 ? (completedTasks / totalTasks) * 100 : 0;
+            
+            return (
+              <div key={project.id} className="relative group">
+                <Link
+                  to={`/project/${project.id}`}
+                  className="block bg-white rounded-lg shadow-md hover:shadow-2xl transition-all duration-300 p-6 transform hover:-translate-y-2 border-2 border-transparent hover:border-blue-400"
+                >
+                  <h3 className="text-xl font-semibold text-gray-800 mb-3 group-hover:text-blue-600 transition-colors">
+                    📁 {project.name}
+                  </h3>
+                  
+                  {/* Progress Bar */}
+                  <div className="mb-3">
+                    <div className="flex justify-between text-xs text-gray-600 mb-1">
+                      <span>التقدم</span>
+                      <span>{Math.round(progressPercent)}%</span>
+                    </div>
+                    <div className="w-full bg-gray-200 rounded-full h-2">
+                      <div 
+                        className="bg-gradient-to-r from-green-400 to-green-600 h-2 rounded-full transition-all duration-500"
+                        style={{ width: `${progressPercent}%` }}
+                      ></div>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-center gap-2 text-sm">
+                    <span className="bg-blue-100 text-blue-700 px-3 py-1 rounded-full font-medium">
+                      📋 {totalTasks} مهمة
+                    </span>
+                    <span className="bg-green-100 text-green-700 px-3 py-1 rounded-full font-medium">
+                      ✅ {completedTasks}
+                    </span>
+                  </div>
+                </Link>
+                <button
+                  onClick={(e) => handleDeleteProject(e, project.id)}
+                  className="absolute top-2 right-2 text-red-500 hover:text-white hover:bg-red-500 bg-white rounded-full w-8 h-8 flex items-center justify-center shadow-md opacity-0 group-hover:opacity-100 transition-all duration-200 transform hover:scale-110"
+                  title="حذف المشروع"
+                >
+                  ✕
+                </button>
+              </div>
+            );
+          })}
         </div>
 
         {projects.length === 0 && (
-          <div className="text-center py-12">
-            <p className="text-gray-600 text-lg">لا توجد مشاريع بعد. أنشئ مشروعك الأول!</p>
+          <div className="text-center py-16">
+            <div className="text-6xl mb-4">📂</div>
+            <p className="text-gray-600 text-xl mb-2">لا توجد مشاريع بعد</p>
+            <p className="text-gray-500">ابدأ بإنشاء مشروعك الأول!</p>
           </div>
         )}
       </div>

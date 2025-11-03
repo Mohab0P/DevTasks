@@ -11,25 +11,32 @@ export default function Navbar() {
   };
 
   return (
-    <nav className="bg-blue-600 text-white shadow-lg">
-      <div className="container mx-auto px-4 py-3 flex items-center justify-between">
-        <Link to="/" className="text-2xl font-bold">
-          DevTasks
+    <nav className="bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-xl sticky top-0 z-50">
+      <div className="container mx-auto px-4 py-4 flex items-center justify-between">
+        <Link to="/" className="text-3xl font-bold flex items-center gap-2 hover:scale-110 transition-transform">
+          <span className="text-4xl">📋</span>
+          <span className="bg-gradient-to-r from-yellow-300 to-pink-300 bg-clip-text text-transparent">
+            DevTasks
+          </span>
         </Link>
 
         {user && (
-          <div className="flex items-center gap-4">
-            <Link to="/dashboard" className="hover:text-blue-200">
-              الرئيسية
+          <div className="flex items-center gap-6">
+            <Link 
+              to="/dashboard" 
+              className="hover:text-yellow-300 font-medium transition-colors flex items-center gap-1"
+            >
+              🏠 الرئيسية
             </Link>
-            <span className="text-blue-200">
-              {user.name}
-            </span>
+            <div className="flex items-center gap-2 bg-blue-700 bg-opacity-50 px-4 py-2 rounded-full">
+              <span className="text-2xl">👤</span>
+              <span className="font-medium">{user.name}</span>
+            </div>
             <button
               onClick={handleLogout}
-              className="bg-blue-700 hover:bg-blue-800 px-4 py-2 rounded"
+              className="bg-red-500 hover:bg-red-600 px-5 py-2 rounded-lg font-medium transform hover:scale-105 transition-all shadow-lg flex items-center gap-2"
             >
-              خروج
+              🚪 خروج
             </button>
           </div>
         )}
