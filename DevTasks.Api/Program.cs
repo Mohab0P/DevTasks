@@ -1,3 +1,4 @@
+// DevTasks API - ASP.NET Core 8 Backend
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
