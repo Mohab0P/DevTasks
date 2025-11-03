@@ -286,47 +286,9 @@ export default function ProjectPage() {
               )}
             </div>
           </div>
-
-          {/* In Progress Column */}
-          <div>
-            <div className="bg-yellow-300 rounded-t-lg px-4 py-2 flex justify-between items-center">
-              <h3 className="font-bold text-gray-800">قيد التنفيذ</h3>
-              <span className="bg-yellow-600 text-white text-xs px-2 py-1 rounded-full">
-                {getStatusCount("InProgress")}
-              </span>
-            </div>
-            <div className="bg-yellow-50 rounded-b-lg p-4 min-h-[400px]">
-              {getTasksByStatus("InProgress").length === 0 ? (
-                <p className="text-gray-400 text-center py-8">لا توجد مهام</p>
-              ) : (
-                getTasksByStatus("InProgress").map((task) => (
-                  <TaskCard key={task.id} task={task} />
-                ))
-              )}
-            </div>
-          </div>
-
-          {/* Done Column
-          <div>
-            <div className="bg-green-300 rounded-t-lg px-4 py-2 flex justify-between items-center">
-              <h3 className="font-bold text-gray-800">مكتملة</h3>
-              <span className="bg-green-600 text-white text-xs px-2 py-1 rounded-full">
-                {getStatusCount("Done")}
-              </span>
-            </div>
-            <div className="bg-green-50 rounded-b-lg p-4 min-h-[400px]">
-              {getTasksByStatus("Done").length === 0 ? (
-                <p className="text-gray-400 text-center py-8">لا توجد مهام</p>
-              ) : (
-                getTasksByStatus("Done").map((task) => (
-                  <TaskCard key={task.id} task={task} />
-                ))
-              )}
-            </div>
-          </div>
         </div>
       </div>
-      )} */}
+      )}
 
       {/* Modal */}
       {showModal && (
