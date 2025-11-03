@@ -44,6 +44,20 @@ export default function Dashboard() {
     }
   };
 
+  const handleDeleteProject = async (e: React.MouseEvent, projectId: number) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    if (!confirm("Are you sure you want to delete this project?")) return;
+    
+    try {
+      await api.delete(`/api/projects/${projectId}`);
+      loadProjects();
+    } catch (error) {
+      console.error("Failed to delete project:", error);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gray-100">
       <Navbar />
@@ -61,16 +75,24 @@ export default function Dashboard() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {projects.map((project) => (
-            <Link
-              key={project.id}
-              to={`/project/${project.id}`}
-              className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow"
-            >
-              <h3 className="text-xl font-semibold text-gray-800 mb-2">
-                {project.name}
-              </h3>
-              <p className="text-gray-600">Click to view tasks</p>
-            </Link>
+            <div key={project.id} className="relative">
+              <Link
+                to={`/project/${project.id}`}
+                className="block bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow"
+              >
+                <h3 className="text-xl font-semibold text-gray-800 mb-2">
+                  {project.name}
+                </h3>
+                <p className="text-gray-600">Click to view tasks</p>
+              </Link>
+              <button
+                onClick={(e) => handleDeleteProject(e, project.id)}
+                className="absolute top-2 right-2 text-red-500 hover:text-red-700 bg-white rounded-full w-8 h-8 flex items-center justify-center shadow"
+                title="Delete project"
+              >
+                ✕
+              </button>
+            </div>
           ))}
         </div>
 

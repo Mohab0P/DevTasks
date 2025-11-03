@@ -23,7 +23,9 @@ export default function ProjectPage() {
   const [project, setProject] = useState<Project | null>(null);
   const [tasks, setTasks] = useState<TaskItem[]>([]);
   const [showModal, setShowModal] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
   const [newTask, setNewTask] = useState({ title: "", description: "" });
+  const [editProjectName, setEditProjectName] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [pageLoading, setPageLoading] = useState(true);
 
@@ -90,13 +92,48 @@ export default function ProjectPage() {
     }
   };
 
+  const handleDeleteTask = async (taskId: number) => {
+    if (!confirm("Are you sure you want to delete this task?")) return;
+    
+    try {
+      await api.delete(`/api/tasks/${taskId}`);
+      loadTasks();
+    } catch (error) {
+      console.error("Failed to delete task:", error);
+    }
+  };
+
+  const handleEditProject = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsLoading(true);
+
+    try {
+      await api.put(`/api/projects/${id}`, { name: editProjectName });
+      setShowEditModal(false);
+      loadProject();
+    } catch (error) {
+      console.error("Failed to update project:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const getTasksByStatus = (status: "ToDo" | "InProgress" | "Done") => {
     return tasks.filter((task) => task.status === status);
   };
 
   const TaskCard = ({ task }: { task: TaskItem }) => (
     <div className="bg-white p-4 rounded-lg shadow mb-3">
-      <h4 className="font-semibold text-gray-800 mb-2">{task.title}</h4>
+      <div className="flex justify-between items-start mb-2">
+        <h4 className="font-semibold text-gray-800">{task.title}</h4>
+        <button
+          onClick={() => handleDeleteTask(task.id)}
+          className="text-red-500 hover:text-red-700 text-sm"
+          title="Delete task"
+        >
+          ✕
+        </button>
+      </div>
       <p className="text-gray-600 text-sm mb-3">{task.description}</p>
       <select
         value={task.status}
@@ -121,9 +158,21 @@ export default function ProjectPage() {
       ) : (
         <div className="container mx-auto px-4 py-8">
           <div className="flex justify-between items-center mb-8">
-            <h1 className="text-3xl font-bold text-gray-800">
-              {project?.name || "Project"}
-            </h1>
+            <div className="flex items-center gap-3">
+              <h1 className="text-3xl font-bold text-gray-800">
+                {project?.name || "Project"}
+              </h1>
+              <button
+                onClick={() => {
+                  setEditProjectName(project?.name || "");
+                  setShowEditModal(true);
+                }}
+                className="text-gray-600 hover:text-blue-600"
+                title="Edit project name"
+              >
+                ✏️
+              </button>
+            </div>
             <button
               onClick={() => setShowModal(true)}
               className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-medium"
@@ -204,6 +253,41 @@ export default function ProjectPage() {
                 <button
                   type="button"
                   onClick={() => setShowModal(false)}
+                  className="flex-1 bg-gray-300 hover:bg-gray-400 text-gray-800 py-2 rounded-lg"
+                >
+                  Cancel
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Edit Project Modal */}
+      {showEditModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-lg p-6 max-w-md w-full">
+            <h2 className="text-2xl font-bold mb-4">Edit Project Name</h2>
+            <form onSubmit={handleEditProject}>
+              <input
+                type="text"
+                value={editProjectName}
+                onChange={(e) => setEditProjectName(e.target.value)}
+                placeholder="Project name"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                required
+              />
+              <div className="flex gap-2">
+                <button
+                  type="submit"
+                  disabled={isLoading}
+                  className="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg disabled:opacity-50"
+                >
+                  {isLoading ? "Saving..." : "Save"}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setShowEditModal(false)}
                   className="flex-1 bg-gray-300 hover:bg-gray-400 text-gray-800 py-2 rounded-lg"
                 >
                   Cancel
