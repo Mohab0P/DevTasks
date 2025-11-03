@@ -20,7 +20,7 @@ export default function Navbar() {
         {user && (
           <div className="flex items-center gap-4">
             <Link to="/dashboard" className="hover:text-blue-200">
-              Dashboard
+              الرئيسية
             </Link>
             <span className="text-blue-200">
               {user.name}
@@ -29,7 +29,7 @@ export default function Navbar() {
               onClick={handleLogout}
               className="bg-blue-700 hover:bg-blue-800 px-4 py-2 rounded"
             >
-              Logout
+              خروج
             </button>
           </div>
         )}

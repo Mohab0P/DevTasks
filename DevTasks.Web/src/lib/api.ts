@@ -21,6 +21,11 @@ async function request(url: string, options: RequestInit = {}) {
     throw new Error(error || "Request failed");
   }
 
+  // Handle 204 No Content
+  if (response.status === 204) {
+    return null;
+  }
+
   return response.json();
 }
 

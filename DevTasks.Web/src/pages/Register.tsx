@@ -28,7 +28,7 @@ export default function Register() {
     <div className="min-h-screen bg-gray-100 flex items-center justify-center px-4">
       <div className="max-w-md w-full bg-white rounded-lg shadow-lg p-8">
         <h2 className="text-3xl font-bold text-center text-gray-800 mb-6">
-          Create Account
+          إنشاء حساب جديد
         </h2>
 
         {error && (
@@ -39,14 +39,14 @@ export default function Register() {
 
         {success && (
           <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">
-            Registration successful! Redirecting to login...
+            تم التسجيل بنجاح! جاري التحويل لصفحة الدخول...
           </div>
         )}
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label className="block text-gray-700 font-medium mb-2">
-              Name
+              الاسم
             </label>
             <input
               type="text"
@@ -54,12 +54,13 @@ export default function Register() {
               onChange={(e) => setName(e.target.value)}
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               required
+              placeholder="محمد أحمد"
             />
           </div>
 
           <div>
             <label className="block text-gray-700 font-medium mb-2">
-              Email
+              البريد الإلكتروني
             </label>
             <input
               type="email"
@@ -67,12 +68,13 @@ export default function Register() {
               onChange={(e) => setEmail(e.target.value)}
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               required
+              placeholder="example@email.com"
             />
           </div>
 
           <div>
             <label className="block text-gray-700 font-medium mb-2">
-              Password
+              كلمة المرور
             </label>
             <input
               type="password"
@@ -81,6 +83,7 @@ export default function Register() {
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               required
               minLength={6}
+              placeholder="••••••••"
             />
           </div>
 
@@ -89,14 +92,14 @@ export default function Register() {
             disabled={isLoading}
             className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg disabled:opacity-50"
           >
-            {isLoading ? "Creating account..." : "Register"}
+            {isLoading ? "جاري التسجيل..." : "تسجيل"}
           </button>
         </form>
 
         <p className="text-center text-gray-600 mt-4">
-          Already have an account?{" "}
+          لديك حساب بالفعل؟{" "}
           <Link to="/login" className="text-blue-600 hover:text-blue-700 font-medium">
-            Login
+            دخول
           </Link>
         </p>
       </div>

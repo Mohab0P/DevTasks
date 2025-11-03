@@ -35,6 +35,31 @@ public static class TaskEndpoints
             return Results.Created($"/api/tasks/{task.Id}", new TaskDto(task.Id, task.Title, task.Description, task.Status, task.ProjectId, task.AssignedToUserId));
         });
 
+        group.MapGet("/project/{projectId:int}", async (int projectId, ClaimsPrincipal user, AppDbContext db) =>
+        {
+            var userId = int.Parse(user.FindFirstValue("uid")!);
+            var project = await db.Projects.FindAsync(projectId);
+            if (project == null) return Results.NotFound();
+            if (project.OwnerId != userId) return Results.Forbid();
+
+            var tasks = await db.Tasks
+                .Where(t => t.ProjectId == projectId)
+                .Select(t => new TaskDto(t.Id, t.Title, t.Description, t.Status, t.ProjectId, t.AssignedToUserId))
+                .ToListAsync();
+
+            return Results.Ok(tasks);
+        });
+
+        group.MapGet("/{id:int}", async (int id, ClaimsPrincipal user, AppDbContext db) =>
+        {
+            var userId = int.Parse(user.FindFirstValue("uid")!);
+            var task = await db.Tasks.Include(t => t.Project).FirstOrDefaultAsync(t => t.Id == id);
+            if (task == null) return Results.NotFound();
+            if (task.Project.OwnerId != userId) return Results.Forbid();
+
+            return Results.Ok(new TaskDto(task.Id, task.Title, task.Description, task.Status, task.ProjectId, task.AssignedToUserId));
+        });
+
         group.MapPut("/{id:int}", async (int id, TaskUpdateRequest request, ClaimsPrincipal user, AppDbContext db) =>
         {
             var userId = int.Parse(user.FindFirstValue("uid")!);

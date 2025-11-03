@@ -25,7 +25,7 @@ export default function Login() {
     <div className="min-h-screen bg-gray-100 flex items-center justify-center px-4">
       <div className="max-w-md w-full bg-white rounded-lg shadow-lg p-8">
         <h2 className="text-3xl font-bold text-center text-gray-800 mb-6">
-          Login to DevTasks
+          تسجيل الدخول
         </h2>
 
         {error && (
@@ -37,7 +37,7 @@ export default function Login() {
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label className="block text-gray-700 font-medium mb-2">
-              Email
+              البريد الإلكتروني
             </label>
             <input
               type="email"
@@ -45,12 +45,13 @@ export default function Login() {
               onChange={(e) => setEmail(e.target.value)}
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               required
+              placeholder="example@email.com"
             />
           </div>
 
           <div>
             <label className="block text-gray-700 font-medium mb-2">
-              Password
+              كلمة المرور
             </label>
             <input
               type="password"
@@ -58,6 +59,7 @@ export default function Login() {
               onChange={(e) => setPassword(e.target.value)}
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               required
+              placeholder="••••••••"
             />
           </div>
 
@@ -66,14 +68,14 @@ export default function Login() {
             disabled={isLoading}
             className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg disabled:opacity-50"
           >
-            {isLoading ? "Loading..." : "Login"}
+            {isLoading ? "جاري التحميل..." : "دخول"}
           </button>
         </form>
 
         <p className="text-center text-gray-600 mt-4">
-          Don't have an account?{" "}
+          ليس لديك حساب؟{" "}
           <Link to="/register" className="text-blue-600 hover:text-blue-700 font-medium">
-            Register
+            سجل الآن
           </Link>
         </p>
       </div>
